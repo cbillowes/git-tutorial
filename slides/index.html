@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>A Hitchhiker's Guide to Git</title>
+
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/black.css" />
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <img
+        src="https://cloudsure.mu/assets/img/logo.min.svg"
+        width="70px"
+        style="margin: 1rem; position: absolute; bottom: 1rem"
+      />
+      <div class="slides">
+        <!-- Welcome -->
+        <section>
+          <img src="dontpanic.png" width="242px" />
+          <h2>The Hitchhiker's Guide<br />to the Git CLI</h2>
+          <p>
+            A follow-up course in a
+            <a href="https://curiousprogrammer.dev/courses/git">trilogy</a> of
+            not many parts.
+          </p>
+          <small>Clarice Bouwer @ Cloudsure Limited</small>
+        </section>
+        <!-- Why CLI? -->
+        <section>
+          <h2>Why the CLI?</h2>
+          <section>
+            <h3>It's the same everywhere</h3>
+            <p>
+              You can use the same commands on any machine, regardless of the
+              operating system.
+            </p>
+          </section>
+          <section>
+            <h3>It's faster</h3>
+            <p>
+              You can do more in less time, once you know what you're doing.
+            </p>
+          </section>
+          <section>
+            <h3>It's more powerful</h3>
+            <p>
+              Perform operations with more control, precision and flexibility.
+            </p>
+          </section>
+          <section>
+            <h3>It's the hacker way</h3>
+            <p>Live life in the terminal.</p>
+            <img
+              src="data:image/jpeg;base64,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"
+            />
+          </section>
+        </section>
+        <!-- Quick recap -->
+        <section>
+          <section>
+            <h2>What is Git?</h2>
+            <p class="fragment fade-in">Distributed version control</p>
+            <p class="fragment fade-in">Collaboration tool</p>
+            <p class="fragment fade-in">Living documentation &amp; history</p>
+          </section>
+          <section data-markdown>
+            <textarea data-template>
+							## Local repository
+
+							```bash
+							❯ tree .git -aL 1
+							.git
+							├── COMMIT_EDITMSG
+							├── HEAD
+							├── config
+							├── description
+							├── hooks
+							├── index
+							├── info
+							├── logs
+							├── objects
+							└── refs
+
+							6 directories, 5 files
+							```
+							`-aL` is all files 1 level deep.
+
+							Don't have the [tree](https://itslinuxfoss.com/install-tree-linux) command? 😱
+						</textarea
+            >
+          </section>
+          <section>
+            <h2>Remote repository</h2>
+            <p>
+              Think GitHub, GitLab, BitBucket ☁️ providers. You can host your
+              own too.
+            </p>
+          </section>
+        </section>
+        <!-- Command recap -->
+        <section>
+          <h2>A quick recap on commands</h2>
+          <section>
+            <pre>
+							<code class="nohighlight">git help</code>
+						</pre>
+          </section>
+          <section>
+            <h2>Start a working area</h2>
+            <pre>
+							<code class="nohighlight">git clone</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git init</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git help tutorial</code>
+						</pre>
+          </section>
+          <section>
+            <h2>Current change</h2>
+            <pre>
+							<code class="nohighlight">git add</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git mv</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git restore</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git rm</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git help everyday</code>
+						</pre>
+          </section>
+          <section>
+            <h2>Examine the history &amp; state</h2>
+            <pre>
+							<code class="nohighlight">git bisect</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git diff</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git grep</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git log</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git show</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git status</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git help revisions</code>
+						</pre>
+          </section>
+          <section>
+            <h2>Grow, mark &amp; tweak common history</h2>
+            <pre>
+							<code class="nohighlight">git branch</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git commit</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git merge # git rebase</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git reset</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git switch</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git tag</code>
+						</pre>
+          </section>
+          <section>
+            <h2>Collaborate</h2>
+            <pre>
+							<code class="nohighlight">git fetch</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git pull</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git push</code>
+						</pre>
+            <pre>
+							<code class="nohighlight">git help workflows</code>
+						</pre>
+          </section>
+        </section>
+        <!-- Anatomy of a commit -->
+        <section>
+          <h2>Anatomy of a commit</h2>
+          <pre>
+						<code>
+commit 26d3b10e310d6258adea5fd01b43486707e4228f (HEAD -> main, origin/main)
+Author: Clarice Bouwer &lt;cbillowes@gmail.com&gt;
+Date:   Wed Jul 19 21:21:23 2023 +0400
+
+		chore: Add instructions
+
+		Instructions were lacking the most
+		important bits of all time.
+		See more at https://random.url/123/456</code>
+					</pre>
+					Read about commits <a href="https://dev.to/cbillowes/why-i-create-atomic-commits-in-git-kfi">here</a> and many other places.
+        </section>
+        <!-- Anatomy of a diff -->
+        <section>
+          <h2>Anatomy of a diff</h2>
+          <pre>
+						<code class="language-diff">
+❯ git show 3abdb13..01e8dcd
+commit 01e8dcde08cbafc86d17a0bf3310d714c78f5c21
+Author: Clarice Bouwer &lt;cbillowes@gmail.com&gt;
+Date:   Wed Jul 19 21:20:28 2023 +0400
+
+		Hello something
+
+diff --git a/hello.txt b/hello.txt
+index ee4d00b..194f332 100644
+--- a/hello.txt
++++ b/hello.txt
+@@ -1,2 +1,3 @@
+Hello World
+Hello Galaxy
++Hello Something
+
+commit 0e9194f1678ec8a8da84b34929f1548fb23782b8
+Author: Clarice Bouwer &lt;cbillowes@gmail.com&gt;
+Date:   Fri Jul 7 09:16:57 2023 +0400
+
+		Hello galaxy
+
+diff --git a/hello.txt b/hello.txt
+index 557db03..ee4d00b 100644
+--- a/hello.txt
++++ b/hello.txt
+@@ -1 +1,2 @@
+Hello World
++Hello Galaxy
+						</code>
+					</pre>
+        </section>
+        <!-- Commands -->
+        <section>
+          <h2>Git commands</h2>
+          <section>
+            <pre>
+							<code>
+	❯ git grep something
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git show 26d3b10e..HEAD
+	❯ git show 26d3b10e..origin/master
+	❯ git show origin/master..HEAD
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git diff --color-words
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git diff --word-diff --unified=10
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git log --pretty='%C(yellow)%h%Creset | %C(yellow)%d%Creset %s %Cgreen(%cr)%Creset %C(cyan)[%an]%Creset' --graph
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git log --pretty=oneline
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git add -i
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git cherry-pick -xe 26d3b10e
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git bisect start 26d3b10e
+							</code>
+						</pre>
+          </section>
+					<section>
+						<pre>
+							<code>
+	❯ git rebase -i HEAD~3
+							</code>
+						</pre>
+					</section>
+          <section>
+            <pre>
+							<code>
+	❯ git &lt;command&gt; help
+							</code>
+						</pre>
+          </section>
+        </section>
+        <!-- Git config -->
+        <section>
+          <h2>Pimp my Git</h2>
+          <section>
+            Edit your config file with your favourite (vim) editor 😝
+            <pre>
+							<code>
+	vim ~/.gitconfig
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code class="nohighlight">
+[user]
+	  name = Clarice Bouwer
+  	email = cbillowes@gmail.com
+[includeIf "gitdir:~/cloudsure/"]
+		email = "clarice@simply.co.za"
+[alias]
+    co = checkout
+		dp = diff --word-diff --unified=10
+		hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+		lg = log --pretty='%C(yellow)%h%Creset | %C(yellow)%d%Creset %s %Cgreen(%cr)%Creset %C(cyan)[%an]%Creset' --graph
+							</code>
+						</pre>
+          </section>
+          <section>
+            <pre>
+							<code>
+	❯ git config --global user.name "Clarice Bouwer"
+	❯ git config --global user.email "cbillowes@gmail.com"
+
+	❯ git config --global alias.co checkout
+	❯ git config --global alias.dp "diff --word-diff --unified=10"
+							</code>
+						</pre>
+          </section>
+        </section>
+        <!-- CLI tips -->
+        <section>
+          <h2>CLI Tips</h2>
+          <section>
+            <pre>
+							<code>mkdir git-tutorial && cd "$_"</code>
+						</pre>
+            Create a directory and immediately change into it.
+          </section>
+          <section>
+            <pre>
+							<code>touch restaurant.clj</code>
+						</pre>
+            <pre>
+							<code>echo Hello Galaxy >> galaxy.txt</code>
+						</pre>
+            <pre>
+							<code>git help >> git-help.txt</code>
+						</pre>
+            Echo the standard output of a command into a new file.
+          </section>
+        </section>
+				<!-- Sensitive -->
+        <section>
+          <h1>It's like Vegas.</h1>
+          <h2>What happens in Git, stays in Git</h2>
+          <p>
+            <a
+              href="https://stackoverflow.com/questions/4468361/search-all-of-git-history-for-a-string"
+              >Watch out</a
+            >
+            for pushing personal information, tokens, keys etc.
+          </p>
+          <pre>
+						<code>
+	❯ git log -S password
+						</code>
+					</pre>
+        </section>
+        <!-- Video -->
+        <section>
+          <iframe
+            width="696"
+            height="392"
+            src="https://www.youtube.com/embed/hwP7WQkmECE"
+            title="Git Explained in 100 Seconds"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </section>
+				<!-- Video -->
+        <section>
+          <iframe
+            width="696"
+            height="392"
+            src="https://www.youtube.com/embed/ecK3EnyGD8o"
+            title="13 Advanced (but useful) Git Techniques and Shortcuts"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </section>
+				<!-- Thanks -->
+				<section>
+					<img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/hostedimages/1562221440i/27764826._SY540_.jpg" alt="So long, and thanks for all the fish!" />
+				</section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
